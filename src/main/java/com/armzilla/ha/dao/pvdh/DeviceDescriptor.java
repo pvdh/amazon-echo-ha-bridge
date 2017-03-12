@@ -3,16 +3,15 @@ package com.armzilla.ha.dao.pvdh;
 //import com.armzilla.ha.dao.elastic.*;
 //import org.springframework.data.annotation.Id;
 //import org.springframework.data.elasticsearch.annotations.Document;
+import java.io.Serializable;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 /**
  * Created by arm on 4/13/15.
  */
 //@Document(indexName = "device", type = "devicedescriptor", shards = 1, replicas = 0, refreshInterval = "-1")
 @Entity
-public class DeviceDescriptor{
+public class DeviceDescriptor implements Serializable{
     @Id
     private String id;
     private String name;

@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping("/upnp")
 public class UpnpSettingsResource {
-    private Logger log = Logger.getLogger(UpnpSettingsResource.class);
+    private final Logger log = Logger.getLogger(UpnpSettingsResource.class);
         @Value("${emulator.portcount}")
         private int portCount;
 
