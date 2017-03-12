@@ -1,9 +1,10 @@
 package com.armzilla.ha.hue;
 
+import com.armzilla.ha.dao.pvdh.DeviceRepository;
+import com.armzilla.ha.dao.pvdh.DeviceDescriptor;
 import com.armzilla.ha.api.hue.DeviceResponse;
 import com.armzilla.ha.api.hue.DeviceState;
 import com.armzilla.ha.api.hue.HueApiResponse;
-import com.armzilla.ha.dao.*;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpEntity;
@@ -47,7 +48,7 @@ public class HueMulator {
     private static final String INTENSITY_PERCENT = "${intensity.percent}";
     private static final String INTENSITY_BYTE = "${intensity.byte}";
     @Autowired
-    private DeviceRepository repository;
+    private com.armzilla.ha.dao.pvdh.DeviceRepository repository;
     private HttpClient httpClient;
     private ObjectMapper mapper;
 

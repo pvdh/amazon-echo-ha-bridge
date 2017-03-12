@@ -1,8 +1,7 @@
-package com.armzilla.ha.devicemanagmeent;
+package com.armzilla.ha.devicemanagement;
 
 import com.armzilla.ha.api.Device;
-import com.armzilla.ha.dao.DeviceDescriptor;
-import com.armzilla.ha.dao.DeviceRepository;
+import com.armzilla.ha.dao.pvdh.DeviceDescriptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +11,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  * Created by arm on 4/13/15.
@@ -24,10 +27,14 @@ public class DeviceResource {
     private static final Set<String> supportedVerbs = new HashSet<>(Arrays.asList("get", "put", "post"));
 
     @Autowired
-    private DeviceRepository deviceRepository;
+    private JpaRepository deviceRepository;
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    
     @RequestMapping(method = RequestMethod.POST, produces = "application/json", headers = "Accept=application/json")
     public ResponseEntity<DeviceDescriptor> createDevice(@RequestBody Device device) {
+        logger.info("creating new device");
+        
         if(device.getContentBody() != null ) {
             if (device.getContentType() == null || device.getHttpVerb() == null || !supportedVerbs.contains(device.getHttpVerb().toLowerCase())) {
                 return new ResponseEntity<>(null, null, HttpStatus.BAD_REQUEST);
@@ -50,7 +57,7 @@ public class DeviceResource {
 
     @RequestMapping(value = "/{lightId}", method = RequestMethod.PUT, produces = "application/json", headers = "Accept=application/json")
     public ResponseEntity<DeviceDescriptor> updateDevice(@PathVariable("lightId") String id, @RequestBody Device device) {
-        DeviceDescriptor deviceEntry = deviceRepository.findOne(id);
+        DeviceDescriptor deviceEntry = (DeviceDescriptor)deviceRepository.findOne(id);
         if(deviceEntry == null){
             return new ResponseEntity<>(null, null, HttpStatus.NOT_FOUND);
         }
@@ -63,18 +70,20 @@ public class DeviceResource {
         deviceRepository.save(deviceEntry);
 
         return new ResponseEntity<>(deviceEntry, null, HttpStatus.OK);
+
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<List<DeviceDescriptor>> findAllDevices() {
         List<DeviceDescriptor> deviceList = deviceRepository.findAll();
         List<DeviceDescriptor> plainList = new LinkedList<>(deviceList);
+
         return new ResponseEntity<>(plainList, null, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{lightId}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<DeviceDescriptor> findByDevicId(@PathVariable("lightId") String id){
-        DeviceDescriptor descriptor = deviceRepository.findOne(id);
+        DeviceDescriptor descriptor = (DeviceDescriptor)deviceRepository.findOne(id);
         if(descriptor == null){
             return new ResponseEntity<>(null, null, HttpStatus.NOT_FOUND);
         }
@@ -83,12 +92,13 @@ public class DeviceResource {
 
     @RequestMapping(value = "/{lightId}", method = RequestMethod.DELETE, produces = "application/json")
     public ResponseEntity<String> deleteDeviceById(@PathVariable("lightId") String id){
-        DeviceDescriptor deleted = deviceRepository.findOne(id);
+        DeviceDescriptor deleted = (DeviceDescriptor)deviceRepository.findOne(id);
         if(deleted == null){
             return new ResponseEntity<>(null, null, HttpStatus.NOT_FOUND);
         }
         deviceRepository.delete(deleted);
         return new ResponseEntity<>(null, null, HttpStatus.NO_CONTENT);
+
     }
 
 

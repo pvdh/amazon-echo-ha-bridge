@@ -7,7 +7,7 @@ angular.module('configurator', [])
             this.state.error = "";
             return $http.get(this.state.base).then(
                 function (response) {
-                    self.state.devices = response.data[0].content;
+                    self.state.devices = response.data;
                 },
                 function (error) {
                     if (error.data) {
